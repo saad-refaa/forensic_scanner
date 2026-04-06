@@ -480,7 +480,7 @@ analyzer = SignatureAnalyzer(use_memory_only=False)
 
 للأسئلة والاقتراحات:
 
-- Email: forensic-scanner@example.com
+- Email: saadr2851@gamil.com
 - GitHub Issues: [github.com/yourusername/forensic-scanner/issues](https://github.com/yourusername/forensic-scanner/issues)
 
 ---

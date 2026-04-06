@@ -1,0 +1,35 @@
+# Bitcoin & Cryptography
+
+ecdsa==0.18.0
+pycryptodome==3.20.0
+coincurve==18.0.0
+bitcoinlib==0.7.8
+blockchain-etl[bitcoin]==2.1.1
+
+
+# Database
+
+
+SQLAlchemy==2.0.27
+
+# Bitcoin Core RPC
+python-bitcoinrpc==1.0
+
+# Data Processing
+pandas==2.2.0
+numpy==1.26.3
+scipy==1.12.0
+
+# Utilities
+tqdm==4.66.1
+click==8.1.7
+python-dotenv==1.0.0
+coloredlogs==15.0.1
+tabulate==0.9.0
+
+# Testing
+pytest==8.0.0
+pytest-asyncio==0.23.4
+
+# GUI (Optional)
+PyQt6==6.6.1

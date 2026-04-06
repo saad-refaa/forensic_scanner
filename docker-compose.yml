@@ -1,0 +1,93 @@
+version: '3.8'
+
+services:
+  # Forensic Scanner Service
+  scanner:
+    build: .
+    container_name: forensic-scanner
+    volumes:
+      - ./data:/app/data
+      - ./output:/app/output
+      - ./logs:/app/logs
+      - ./wordlists:/app/wordlists
+    environment:
+      - BITCOIN_RPC_HOST=bitcoin-core
+      - BITCOIN_RPC_PORT=8332
+      - BITCOIN_RPC_USER=bitcoin
+      - BITCOIN_RPC_PASSWORD=${BITCOIN_RPC_PASSWORD:-password}
+      - DB_TYPE=postgresql
+      - PG_HOST=postgres
+      - PG_PORT=5432
+      - PG_DATABASE=forensic_scanner
+      - PG_USER=scanner
+      - PG_PASSWORD=${POSTGRES_PASSWORD:-scanner}
+      - LOG_LEVEL=INFO
+    depends_on:
+      - postgres
+      - bitcoin-core
+    networks:
+      - forensic-network
+    command: >
+      python main.py 
+      --mode full 
+      --start-block 0 
+      --end-block 336000
+      --db-type postgresql
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: forensic-postgres
+    environment:
+      - POSTGRES_USER=scanner
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-scanner}
+      - POSTGRES_DB=forensic_scanner
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - forensic-network
+
+  # Bitcoin Core (optional - for local testing)
+  bitcoin-core:
+    image: ruimarinho/bitcoin-core:latest
+    container_name: forensic-bitcoin
+    environment:
+      - BITCOIN_RPC_USER=bitcoin
+      - BITCOIN_RPC_PASSWORD=${BITCOIN_RPC_PASSWORD:-password}
+    volumes:
+      - bitcoin_data:/home/bitcoin/.bitcoin
+    ports:
+      - "8332:8332"
+      - "8333:8333"
+    command: >
+      bitcoind
+      -server=1
+      -txindex=1
+      -rpcallowip=0.0.0.0/0
+      -rpcbind=0.0.0.0
+      -rpcuser=bitcoin
+      -rpcpassword=${BITCOIN_RPC_PASSWORD:-password}
+    networks:
+      - forensic-network
+
+  # Web Interface (future development)
+  # web:
+  #   build: ./web
+  #   container_name: forensic-web
+  #   ports:
+  #     - "8080:8080"
+  #   depends_on:
+  #     - scanner
+  #     - postgres
+  #   networks:
+  #     - forensic-network
+
+volumes:
+  postgres_data:
+  bitcoin_data:
+
+networks:
+  forensic-network:
+    driver: bridge

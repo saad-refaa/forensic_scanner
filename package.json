@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "blockchain-download": "^2.1.2"
+  }
+}
